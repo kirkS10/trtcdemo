@@ -128,11 +128,14 @@ function CallPage() {
 
     const handleIncomingCall = (eventData) => {
         const caller = eventData?.sponsor || "Unknown Caller";
-        const acceptCall = window.confirm(`Incoming call from ${caller}. Accept?`);
+        
+        // Show a pop-up alert for the incoming call
+        const acceptCall = window.confirm(`📞 Incoming call from ${caller}. Accept?`);
+        
         if (acceptCall) {
-            TUICallKitServer.accept();
+            TUICallKitServer.accept(); // Accept the call
         } else {
-            TUICallKitServer.reject();
+            TUICallKitServer.reject(); // Reject the call
         }
     };
 
