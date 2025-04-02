@@ -72,28 +72,6 @@ function CallPage() {
       height: '100vh'
     };
 
-    const notifyCallee = async () => {
-        if (!calleeUserID) {
-          alert('Please enter callee userID');
-          return;
-        }
-        try {
-          setIsLoading(true);
-          await TUICallKitServer.notifyCallee({
-            userIDList: [calleeUserID],
-            type: TUICallType.AUDIO_CALL,
-          }).catch((error) => {
-            console.error('Notify error:', error);
-            alert('Notify failed');
-          });
-        } catch (error) {
-          console.error('Error during notify:', error);
-          alert('Notify error');
-        } finally {
-          setIsLoading(false);
-        }
-      }
-
     const CallButton = {
         backgroundColor: '#4CBB17',
         color: 'white',
@@ -132,7 +110,7 @@ function CallPage() {
         </button>
         {isLoading && <p>Loading...</p>}
         {/* TUICallKit Component for Call Interface UI */}
-        <TUICallKit onIncomingCall={handleIncomingCall} beforeCalling={notifyCallee}/>
+        <TUICallKit onIncomingCall={handleIncomingCall} />
       </div>
     );
   }
