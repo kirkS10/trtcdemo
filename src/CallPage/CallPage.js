@@ -116,7 +116,7 @@
 //   }
   
 //   export default CallPage;
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TUICallKit, TUICallKitServer, TUICallType } from "@tencentcloud/call-uikit-react";
 
 function CallPage() {
@@ -126,26 +126,15 @@ function CallPage() {
     // Retrieve the caller's userID from localStorage
     const callerUserID = localStorage.getItem('callerUserID') || 'Unknown';
 
-    useEffect(() => {
-        // Function to handle incoming calls
-        const handleIncomingCall = (eventData) => {
-            const caller = eventData.sponsor || "Unknown Caller";
-            const acceptCall = window.confirm(`Incoming call from ${caller}. Accept?`);
-            if (acceptCall) {
-                TUICallKitServer.accept();
-            } else {
-                TUICallKitServer.reject();
-            }
-        };
-
-        // Subscribe to the incoming call event
-        TUICallKitServer.on('onIncomingCall', handleIncomingCall);
-
-        // Cleanup function to remove the event listener when the component unmounts
-        return () => {
-            TUICallKitServer.off('onIncomingCall', handleIncomingCall);
-        };
-    }, []); // Empty dependency array ensures it only runs once
+    const handleIncomingCall = (eventData) => {
+        const caller = eventData?.sponsor || "Unknown Caller";
+        const acceptCall = window.confirm(`Incoming call from ${caller}. Accept?`);
+        if (acceptCall) {
+            TUICallKitServer.accept();
+        } else {
+            TUICallKitServer.reject();
+        }
+    };
 
     const call = async () => {
         if (!calleeUserID) {
@@ -217,9 +206,10 @@ function CallPage() {
             {isLoading && <p>Loading...</p>}
             
             {/* TUICallKit Component for Call Interface UI */}
-            <TUICallKit />
+            <TUICallKit onIncomingCall={handleIncomingCall} />
         </div>
     );
 }
 
 export default CallPage;
+
