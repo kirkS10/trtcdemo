@@ -2,7 +2,7 @@
   "name": "trtcdemo",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kirkS10.github.io/trtcdemo",
+  "homepage": ".",
   "dependencies": {
     "@tencentcloud/call-uikit-react": "^4.0.5",
     "@testing-library/dom": "^10.4.0",
