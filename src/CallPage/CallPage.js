@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TUICallKit, TUICallKitServer, TUICallType } from "@tencentcloud/call-uikit-react";
+import { TUICallEvent, tuiCallEngine } from 'tuicall-engine-webrtc';
 
 function CallPage() {
     const [calleeUserID, setCalleeUserID] = useState('');
@@ -8,6 +9,30 @@ function CallPage() {
     // Retrieve the caller's userID from localStorage
     const callerUserID = localStorage.getItem('callerUserID') || 'Unknown';
   
+    useEffect(() => {
+      // Initialize TUICallKit when the component mounts
+      const initializeCallKit = async () => {
+        try {
+          await tuiCallEngine.on(TUICallEvent.ON_CALL_RECEIVED, handleOnCallReceived);
+        } catch (error) {
+          console.error('Error using tuiCallEngine', error);
+        }
+      };
+  
+      initializeCallKit();
+    }
+    , [callerUserID]);
+
+    const handleOnCallReceived = (eventData) => {
+      const caller = eventData.sponsor || "Unknown Caller";
+      const acceptCall = window.confirm(`Incoming call from ${caller}. Accept?`);
+      if (caller) {
+        alert(`Incoming call from ${caller}`);
+      } else {
+        alert(`notify Error`);
+      }
+    }
+
     const call = async () => {
       if (!calleeUserID) {
         alert('Please enter callee userID');
