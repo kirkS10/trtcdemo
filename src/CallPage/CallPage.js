@@ -122,23 +122,31 @@ import { TUICallKit, TUICallKitServer, TUICallType } from "@tencentcloud/call-ui
 function CallPage() {
     const [calleeUserID, setCalleeUserID] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-
+    
     // Retrieve the caller's userID from localStorage
     const callerUserID = localStorage.getItem('callerUserID') || 'Unknown';
 
+    // Handle incoming call event
     const handleIncomingCall = (eventData) => {
-        const caller = eventData?.sponsor || "Unknown Caller";
-        
-        // Show a pop-up alert for the incoming call
-        const acceptCall = window.confirm(`📞 Incoming call from ${caller}. Accept?`);
-        
-        if (acceptCall) {
-            TUICallKitServer.accept(); // Accept the call
-        } else {
-            TUICallKitServer.reject(); // Reject the call
+        const caller = eventData?.sponsor || "Unknown Caller"; // Get sponsor (caller)
+        console.log("================================",eventData); //where in the docment can check what data object event will return?
+        //doc shows here returns a event, but what is it? need to know so I can grab needed info 
+
+        // Check if this is the receiver's call (i.e., not the caller)
+        if (caller !== calleeUserID) {
+            // Show a pop-up alert for the incoming call
+            const acceptCall = window.confirm(`📞 Let's have a call.`);
+
+            // If accepted, accept the call, otherwise reject
+            if (acceptCall) {
+                TUICallKitServer.accept(); // Accept the call
+            } else {
+                TUICallKitServer.reject(); // Reject the call
+            }
         }
     };
 
+    // Initiate a call to the callee
     const call = async () => {
         if (!calleeUserID) {
             alert('Please enter callee userID');
@@ -161,7 +169,7 @@ function CallPage() {
         }
     };
 
-    // Styles
+    // Styles for the page
     const containerStyle = {
         display: 'flex',
         flexDirection: 'column',
@@ -209,10 +217,13 @@ function CallPage() {
             {isLoading && <p>Loading...</p>}
             
             {/* TUICallKit Component for Call Interface UI */}
-            <TUICallKit onIncomingCall={handleIncomingCall} />
+            <TUICallKit 
+                beforeCalling={handleIncomingCall} // Use this to listen to incoming calls
+            />
         </div>
     );
 }
 
 export default CallPage;
+
 
